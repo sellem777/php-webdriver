@@ -78,6 +78,7 @@ script:
   - if [ "$BROWSER_NAME" = "firefox" ]; then EXCLUDE_GROUP+="exclude-firefox,"; fi
   - if [ "$BROWSER_NAME" = "chrome" ]; then EXCLUDE_GROUP+="exclude-chrome,"; fi
   - if [ -n "$EXCLUDE_GROUP" ]; then EXTRA_PARAMS+=" --exclude-group $EXCLUDE_GROUP"; fi
+  - ./sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY --tunnel-identifier $TRAVIS_JOB_NUMBER --logfile ~/logs/sc.log --doctor
   - ./vendor/bin/phpunit --filter testShouldFindElementIfExistsOnAPage --coverage-clover ./logs/coverage-clover.xml $EXTRA_PARAMS
 
 after_script:
