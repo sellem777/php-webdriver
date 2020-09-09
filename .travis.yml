@@ -23,7 +23,7 @@ matrix:
         - dig maki86100.miso.saucelabs.com
         - mkdir -p ~/logs
         - php -S 127.0.0.1:8000 -t tests/functional/web/ &>>~/logs/php-server.log &
-        - until $(echo | nc localhost 8000); do sleep 1; echo waiting for PHP server on port 8000...; done; echo "PHP server started"
+        - sleep 5
         - mkdir sc; wget -q -t 3 https://saucelabs.com/downloads/sc-4.6.2-linux.tar.gz; tar xzf sc-4.6.2-linux.tar.gz
         - ./sc-4.6.2-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY --tunnel-identifier $TRAVIS_JOB_NUMBER --logfile ~/logs/sc.log &
         - sleep 20
