@@ -16,6 +16,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
     const DEFAULT_HTTP_HEADERS = [
         'Content-Type: application/json;charset=UTF-8',
         'Accept: application/json',
+        'Host: localhost'
     ];
 
     /**
