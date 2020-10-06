@@ -1,5 +1,5 @@
 {
-  "name": "php-webdriver/webdriver",
+  "name": "sellem777/webdriver",
   "type": "library",
   "description": "A PHP client for Selenium WebDriver. Previously facebook/webdriver.",
   "keywords": [
