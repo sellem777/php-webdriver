@@ -16,7 +16,6 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
     const DEFAULT_HTTP_HEADERS = [
         'Content-Type: application/json;charset=UTF-8',
         'Accept: application/json',
-        'Host: localhost'
     ];
 
     /**
@@ -178,14 +177,20 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
     protected $isW3cCompliant = true;
 
     /**
+     * @var array
+     */
+    protected $headers = [];
+
+    /**
      * @param string $url
      * @param string|null $http_proxy
      * @param int|null $http_proxy_port
      */
-    public function __construct($url, $http_proxy = null, $http_proxy_port = null)
+    public function __construct($url, $http_proxy = null, $http_proxy_port = null, $headers = [])
     {
         self::$w3cCompliantCommands = array_merge(self::$commands, self::$w3cCompliantCommands);
 
+        $this->headers = $headers;
         $this->url = $url;
         $this->curl = curl_init();
 
@@ -207,7 +212,7 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
 
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, static::DEFAULT_HTTP_HEADERS);
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, array_merge(static::DEFAULT_HTTP_HEADERS, $this->headers));
         $this->setRequestTimeout(30000);
         $this->setConnectionTimeout(30000);
     }
@@ -299,9 +304,9 @@ class HttpCommandExecutor implements WebDriverCommandExecutor
         if (in_array($http_method, ['POST', 'PUT'])) {
             // Disable sending 'Expect: 100-Continue' header, as it is causing issues with eg. squid proxy
             // https://tools.ietf.org/html/rfc7231#section-5.1.1
-            curl_setopt($this->curl, CURLOPT_HTTPHEADER, array_merge(static::DEFAULT_HTTP_HEADERS, ['Expect:']));
+            curl_setopt($this->curl, CURLOPT_HTTPHEADER, array_merge(static::DEFAULT_HTTP_HEADERS, $this->headers, ['Expect:']));
         } else {
-            curl_setopt($this->curl, CURLOPT_HTTPHEADER, static::DEFAULT_HTTP_HEADERS);
+            curl_setopt($this->curl, CURLOPT_HTTPHEADER, array_merge(static::DEFAULT_HTTP_HEADERS, $this->headers));
         }
 
         $encoded_params = null;
