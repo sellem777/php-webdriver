@@ -91,13 +91,14 @@ class RemoteWebDriver implements WebDriver, JavaScriptExecutor, WebDriverHasInpu
         $request_timeout_in_ms = null,
         $http_proxy = null,
         $http_proxy_port = null,
-        DesiredCapabilities $required_capabilities = null
+        DesiredCapabilities $required_capabilities = null,
+        $headers = []
     ) {
         $selenium_server_url = preg_replace('#/+$#', '', $selenium_server_url);
 
         $desired_capabilities = self::castToDesiredCapabilitiesObject($desired_capabilities);
 
-        $executor = new HttpCommandExecutor($selenium_server_url, $http_proxy, $http_proxy_port);
+        $executor = new HttpCommandExecutor($selenium_server_url, $http_proxy, $http_proxy_port, $headers);
         if ($connection_timeout_in_ms !== null) {
             $executor->setConnectionTimeout($connection_timeout_in_ms);
         }
@@ -167,12 +168,13 @@ class RemoteWebDriver implements WebDriver, JavaScriptExecutor, WebDriverHasInpu
         $session_id,
         $selenium_server_url = 'http://localhost:4444/wd/hub',
         $connection_timeout_in_ms = null,
-        $request_timeout_in_ms = null
+        $request_timeout_in_ms = null,
+        $headers = []
     ) {
         // BC layer to not break the method signature
         $isW3cCompliant = func_num_args() > 4 ? func_get_arg(4) : true;
 
-        $executor = new HttpCommandExecutor($selenium_server_url, null, null);
+        $executor = new HttpCommandExecutor($selenium_server_url, null, null, $headers);
         if ($connection_timeout_in_ms !== null) {
             $executor->setConnectionTimeout($connection_timeout_in_ms);
         }
@@ -563,9 +565,9 @@ class RemoteWebDriver implements WebDriver, JavaScriptExecutor, WebDriverHasInpu
      * @param int $timeout_in_ms
      * @return array
      */
-    public static function getAllSessions($selenium_server_url = 'http://localhost:4444/wd/hub', $timeout_in_ms = 30000)
+    public static function getAllSessions($selenium_server_url = 'http://localhost:4444/wd/hub', $timeout_in_ms = 30000, $headers = [])
     {
-        $executor = new HttpCommandExecutor($selenium_server_url, null, null);
+        $executor = new HttpCommandExecutor($selenium_server_url, null, null, $headers);
         $executor->setConnectionTimeout($timeout_in_ms);
 
         $command = new WebDriverCommand(
